@@ -36,3 +36,4 @@ flattened/*
 ######################
 abi_encode.js
 node_modules/
+package-lock.js

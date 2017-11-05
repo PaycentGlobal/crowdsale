@@ -6,7 +6,7 @@ Date.prototype.getUnixTime = function() {
 
 // set start and walet to actual values
 var start = new Date("November 2, 2017 09:00:00 GMT+0800").getUnixTime();
-var wallet = '0x873D80B51A364347c6b4dd12d547F5459845A67B';
+var wallet = '0x00953e92CcE40885295f3642e322b8B2c8998eed';
 
 var RateOracle = artifacts.require("RateOracle");
 var PynToken = artifacts.require("PynToken");
