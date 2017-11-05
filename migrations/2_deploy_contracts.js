@@ -3,7 +3,6 @@ Date.prototype.getUnixTime = function() {
   return this.getTime()/1000|0;
 };
 
-
 // set start and walet to actual values
 var start = new Date("November 2, 2017 09:00:00 GMT+0800").getUnixTime();
 var wallet = '0x00953e92CcE40885295f3642e322b8B2c8998eed';
