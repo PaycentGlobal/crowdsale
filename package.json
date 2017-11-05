@@ -18,17 +18,11 @@
   },
   "repository": {
     "type": "git",
-<<<<<<< HEAD
     "url": "https://github.com/PaycentGlobal/crowdsale"
-=======
->>>>>>> be0d703f2d665f6e3b2e84f39acfcda956dbb9f3
   },
   "keywords": [
     "solidity",
     "smartcontract"
   ]
-<<<<<<< HEAD
 }
-=======
 }
->>>>>>> be0d703f2d665f6e3b2e84f39acfcda956dbb9f3
