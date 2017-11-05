@@ -1,7 +1,7 @@
 {
-  "name": "art",
+  "name": "pyn_token",
   "version": "1.0.0",
-  "description": "Art TokenSale SmartContract",
+  "description": "PYN Crowdsale and Token SmartContracts",
   "main": "truffle.js",
   "private": true,
   "dependencies": {
@@ -18,11 +18,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@gitlab.smartdec.ru:7999/smartdec/smartcontracts/art.git"
   },
   "keywords": [
     "solidity",
     "smartcontract"
-  ],
-  "author": "marchenko@smartdec.net"
+  ]
 }
