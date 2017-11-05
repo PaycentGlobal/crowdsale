@@ -1,0 +1,38 @@
+# Compiled source #
+###################
+build/*
+flattened/*
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+# IDE Files
+######################
+/nbproject/
+.idea/*
+
+# Files
+######################
+abi_encode.js
+node_modules/
