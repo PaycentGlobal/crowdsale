@@ -1,0 +1,28 @@
+{
+  "name": "art",
+  "version": "1.0.0",
+  "description": "Art TokenSale SmartContract",
+  "main": "truffle.js",
+  "private": true,
+  "dependencies": {
+    "ethereumjs-abi": "^0.6.4",
+    "truffle": "^4.0.0"
+  },
+  "devDependencies": {
+    "solidity-coverage": "^0.2.7"
+  },
+  "scripts": {
+    "test": "truffle test",
+    "coverage": "solidity-coverage",
+    "truffle": "truffle"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@gitlab.smartdec.ru:7999/smartdec/smartcontracts/art.git"
+  },
+  "keywords": [
+    "solidity",
+    "smartcontract"
+  ],
+  "author": "marchenko@smartdec.net"
+}
