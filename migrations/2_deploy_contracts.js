@@ -30,7 +30,7 @@ module.exports = function(deployer, network, accounts) {
   .then(function (_instance) {
     tokenInstance = _instance
     return deployer.deploy(
-      PynTokenCrowdsale, wallet, tokenInstance.address, start, oracleInstance.address, 127, 118, 112, true);
+      PynTokenCrowdsale, wallet, tokenInstance.address, start, oracleInstance.address, 127, 118, 112, true, 0);
   })
   .then(function () {
     return PynTokenCrowdsale.deployed()
