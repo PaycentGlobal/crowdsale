@@ -27,6 +27,9 @@ contract PynTokenCrowdsale is Pausable {
     // if true bonus applied to every purchase, otherwise only if msg.sender already has some PYN tokens
     bool public bonusForEveryone;
 
+    // minimum accepted amount of wei 
+    uint256 public minimumContribution;
+
     function PynTokenCrowdsale(
     address _fundsWallet,
     address _pynToken,
@@ -35,7 +38,8 @@ contract PynTokenCrowdsale is Pausable {
     uint16 _bonus1,
     uint16 _bonus2,
     uint16 _bonus3,
-    bool _bonusForEveryone) public {
+    bool _bonusForEveryone,
+    uint256 _minimumContribution) public {
         fundsWallet = _fundsWallet;
         token = PynToken(_pynToken);
         startTimestamp = _startTimestamp;
@@ -44,6 +48,7 @@ contract PynTokenCrowdsale is Pausable {
         bonus2 = _bonus2;
         bonus3 = _bonus3;
         bonusForEveryone = _bonusForEveryone;
+        minimumContribution = _minimumContribution;
     }
 
     bool internal capReached;
@@ -63,6 +68,7 @@ contract PynTokenCrowdsale is Pausable {
     }
 
     function buyTokens() public isOpen whenNotPaused payable {
+        require (msg.value >= minimumContribution);
 
         uint256 payedEther = msg.value;
         uint256 acceptedEther = 0;
