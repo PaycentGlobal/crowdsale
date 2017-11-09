@@ -5,7 +5,8 @@ import "./lifecycle/Pausable.sol";
 import "./IRateOracle.sol";
 import "./PynToken.sol";
 
-
+/// @title Crowdsle contract for Paycentos Token 
+/// @author Evgeny Marchenko
 contract PynTokenCrowdsale is Pausable {
     using SafeMath for uint256;
 
@@ -30,6 +31,17 @@ contract PynTokenCrowdsale is Pausable {
     // minimum accepted amount of wei 
     uint256 public minimumContribution;
 
+
+    /// @dev initializes crowdsle
+    /// @param _fundsWallet address of wallet that receives all collected ether
+    /// @param _pynToken address of Paycentos Token contract
+    /// @param _startTimestamp start date of crowdsale
+    /// @param _rateOracle address of RateOracle contract that provides ETH to PYN rate
+    /// @param _bonus1 bonus during day first 2 days
+    /// @param _bonus2 bonus during day 3 - 5
+    /// @param _bonus3 bonus during day 6 - 10
+    /// @param _bonusForEveryone if true everyone will receive bonuses; otherwise only those who allready has PYN tokens
+    /// @param _minimumContribution minimum accepted contribution 
     function PynTokenCrowdsale(
     address _fundsWallet,
     address _pynToken,
@@ -53,6 +65,9 @@ contract PynTokenCrowdsale is Pausable {
 
     bool internal capReached;
 
+    /// @dev check if crowdsale is open
+    /// @param _fundsWallet address of wallet that receives all collected ether
+    /// @return true if crowdsale has started, it's duration not ended and there are some tokens left 
     function isCrowdsaleOpen() public constant returns (bool) {
         return !capReached && now >= startTimestamp && now <= startTimestamp + duration;
     }
@@ -63,10 +78,12 @@ contract PynTokenCrowdsale is Pausable {
     }
 
 
+    /// @dev fallback function to receive ether from wallets (requires more gas than usual)
     function() public payable {
         buyTokens();
     }
 
+    /// @dev send ether while calling this function to buy tokens; when crowdsale haven't enought tokens it refunds part of received ether
     function buyTokens() public isOpen whenNotPaused payable {
         require (msg.value >= minimumContribution);
 
@@ -97,6 +114,9 @@ contract PynTokenCrowdsale is Pausable {
         }
     }
 
+    /// @dev calculate token units received for provided wei amount (based on rate and bonuses)
+    /// @param weiAmount ether spent to buy tokens 
+    /// @return token units that might be bought for provided ether
     function calculateTokenAmount(uint256 weiAmount) public constant returns (uint256) {
         uint256 converted = rateOracle.converted(weiAmount);
         if (bonusForEveryone || token.balanceOf(msg.sender) > 0) {
@@ -117,6 +137,7 @@ contract PynTokenCrowdsale is Pausable {
         return converted;
     }
 
+    /// @dev call this function to finalize crowdsale phase: burn any tokens left in crowdsale, allow token transfers
     function success() public returns (bool) { 
         require(now > startTimestamp);
         uint256 balance = token.balanceOf(this);
