@@ -23,7 +23,7 @@ contract TestCrowdsaleComplete {
   // if you finish crowdsale all tokens get burned
   function test_phase_success_date() public {
     token = new PynToken(this);
-    phase = new PynTokenCrowdsale(this, token, now - 31 days, oracle, 127, 118, 112, true);
+    phase = new PynTokenCrowdsale(this, token, now - 31 days, oracle, 127, 118, 112, true, 0);
     token.addSpecialAccount(phase);
     Assert.equal(phase.isCrowdsaleOpen(), false, "Crowdsale should not be open");
 
@@ -50,7 +50,7 @@ contract TestCrowdsaleComplete {
   function test_phase_success_tokens() public {
     // init and check that crowdsale is open
     token = new PynToken(this);
-    phase = new PynTokenCrowdsale(this, token, now - 1 days, oracle, 127, 118, 112, true);
+    phase = new PynTokenCrowdsale(this, token, now - 1 days, oracle, 127, 118, 112, true, 0);
     token.addSpecialAccount(phase);
     Assert.equal(phase.isCrowdsaleOpen(), true, "Crowdsale should be open");
 

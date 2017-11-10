@@ -1,11 +1,12 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.18;
 
 import "./math/SafeMath.sol";
 import "./lifecycle/Pausable.sol";
 import "./IRateOracle.sol";
 import "./PynToken.sol";
 
-
+/// @title Crowdsle contract for Paycentos Token 
+/// @author Evgeny Marchenko
 contract PynTokenCrowdsale is Pausable {
     using SafeMath for uint256;
 
@@ -27,6 +28,20 @@ contract PynTokenCrowdsale is Pausable {
     // if true bonus applied to every purchase, otherwise only if msg.sender already has some PYN tokens
     bool public bonusForEveryone;
 
+    // minimum accepted amount of wei 
+    uint256 public minimumContribution;
+
+
+    /// @dev initializes crowdsale
+    /// @param _fundsWallet Address of wallet that receives all collected ether
+    /// @param _pynToken Address of Paycentos Token contract
+    /// @param _startTimestamp Start date of crowdsale
+    /// @param _rateOracle Address of RateOracle contract that provides ETH to PYN rate
+    /// @param _bonus1 Bonus during day first 2 days
+    /// @param _bonus2 Bonus during day 3 - 5
+    /// @param _bonus3 Bonus during day 6 - 10
+    /// @param _bonusForEveryone If true everyone will receive bonuses; otherwise only those who already has PYN tokens
+    /// @param _minimumContribution Minimum accepted contribution 
     function PynTokenCrowdsale(
     address _fundsWallet,
     address _pynToken,
@@ -35,7 +50,8 @@ contract PynTokenCrowdsale is Pausable {
     uint16 _bonus1,
     uint16 _bonus2,
     uint16 _bonus3,
-    bool _bonusForEveryone) public {
+    bool _bonusForEveryone,
+    uint256 _minimumContribution) public {
         fundsWallet = _fundsWallet;
         token = PynToken(_pynToken);
         startTimestamp = _startTimestamp;
@@ -44,10 +60,14 @@ contract PynTokenCrowdsale is Pausable {
         bonus2 = _bonus2;
         bonus3 = _bonus3;
         bonusForEveryone = _bonusForEveryone;
+        minimumContribution = _minimumContribution;
     }
 
     bool internal capReached;
 
+    /// @dev Check if crowdsale is open
+    /// @notice Check if crowdsale is open
+    /// @return A bool if crowdsale has started, it's duration not ended and there are some tokens left 
     function isCrowdsaleOpen() public constant returns (bool) {
         return !capReached && now >= startTimestamp && now <= startTimestamp + duration;
     }
@@ -58,11 +78,16 @@ contract PynTokenCrowdsale is Pausable {
     }
 
 
+    /// @dev Fallback function to receive ether from wallets (requires more gas than usual)
+    /// @notice Fallback function to receive ether while calling this function to buy tokens; 
     function() public payable {
         buyTokens();
     }
 
+    /// @dev Send ether while calling this function to buy tokens; when crowdsale haven't enought tokens it refunds part of received ether
+    /// @notice Send ether while calling this function to buy tokens; 
     function buyTokens() public isOpen whenNotPaused payable {
+        require (msg.value >= minimumContribution);
 
         uint256 payedEther = msg.value;
         uint256 acceptedEther = 0;
@@ -91,6 +116,10 @@ contract PynTokenCrowdsale is Pausable {
         }
     }
 
+    /// @dev Calculate token units received for provided wei amount (based on rate and bonuses)
+    /// @notice Calculate token units received for provided wei amount (based on rate and bonuses)
+    /// @param weiAmount ether spent to buy tokens 
+    /// @return Token units that might be bought for provided ether
     function calculateTokenAmount(uint256 weiAmount) public constant returns (uint256) {
         uint256 converted = rateOracle.converted(weiAmount);
         if (bonusForEveryone || token.balanceOf(msg.sender) > 0) {
@@ -111,6 +140,8 @@ contract PynTokenCrowdsale is Pausable {
         return converted;
     }
 
+    /// @dev Call this function to finalize crowdsale phase: burn any tokens left in crowdsale, allow token transfers, works only if conditions met
+    /// @notice Call this function to finalize crowdsale phase: burn any tokens left in crowdsale, allow token transfers, works only if conditions met
     function success() public returns (bool) { 
         require(now > startTimestamp);
         uint256 balance = token.balanceOf(this);
